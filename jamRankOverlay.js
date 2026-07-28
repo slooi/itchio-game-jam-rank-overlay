@@ -73,7 +73,7 @@ function rankObj(index, jamGame, jamGames) {
     return {
         "jamGame": jamGame,
         "gameTitle": jamGame.game.title,
-        "percentage": Math.round(((index + 1) / jamGames.length) * 1000 * 1000) / 100,
+        "percentage": Math.round(((index + 1) / jamGames.length) * 1000 * 100) / 1000,
         "popularityRank": index + 1
     }
 }
@@ -298,7 +298,7 @@ async function displayRankInRatingPage() {
 
     const { gameIdToRank, gameNameToRank, authorToRank } = collectUsefulData(jamGames)
 
-    renderTextOnGameHeader(rankToTextSingleRank(gameIdToRank[gameId]), true)
+    renderTextOnGameHeader(rankToTextSingleRank(gameIdToRank[gameId]) + ` of ${jamGames.length}`, true)
     addColumnForRankPercentage(jamGames.length)
 }
 
