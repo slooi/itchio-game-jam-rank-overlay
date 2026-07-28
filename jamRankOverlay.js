@@ -73,7 +73,7 @@ function rankObj(index, jamGame, jamGames) {
     return {
         "jamGame": jamGame,
         "gameTitle": jamGame.game.title,
-        "percentage": Math.round(((index + 1) / jamGames.length) * 100 * 100) / 100,
+        "percentage": Math.round(((index + 1) / jamGames.length) * 1000 * 1000) / 100,
         "popularityRank": index + 1
     }
 }
@@ -299,10 +299,30 @@ async function displayRankInRatingPage() {
     const { gameIdToRank, gameNameToRank, authorToRank } = collectUsefulData(jamGames)
 
     renderTextOnGameHeader(rankToTextSingleRank(gameIdToRank[gameId]), true)
+    addColumnForRankPercentage(jamGames.length)
 }
 
 
+function addColumnForRankPercentage(numberOfEntries) {
+    /* USE THE REAL NUMBER OF ENTRIES NOT THE DISPLAYED ONE USING HTML.... */
+    var rankIndex = [...document.querySelectorAll("table thead td")].findIndex(e => e.innerText === "Rank")
+    var table = document.querySelector("table");
+    var rows = [...table.querySelectorAll("tr")];
+    var rowHeader = rows.shift();
 
+    var newHeader = document.createElement("td")
+    newHeader.innerText = "PROPORTIONAL RANKS USING VISIBLE ENTRIES"
+    rowHeader.append(newHeader)
+
+    var rankVals = rows.map(tr => tr.querySelectorAll("td")[rankIndex].innerText).map(rawText => Number([...rawText.matchAll(/\d+/gmi)][0][0]))
+    // var rankPercentages = rankVals.map(val => Math.round((val / numberOfEntries) * 1000) / 1000 * 100)
+    var rankPercentages = rankVals.map(val => Number((val / numberOfEntries * 100).toFixed(3)))
+    rows.forEach((tr, i) => {
+        var td = document.createElement("td")
+        td.innerText = `${rankPercentages[i]}% (#${rankVals[i]} of ${numberOfEntries})`
+        tr.append(td)
+    })
+}
 
 
 // var serachIndex = jamGames.findIndex((obj, i) => obj.game.title == "Divine Wind")
